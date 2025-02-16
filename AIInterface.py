@@ -7,8 +7,12 @@ from Configuration import *
 class AIInterface :
     def __init__(self):
         self.tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_MODEL)
+        self.console_position = 0
+        self.last_time = time.time()
+        self.chunk_count = 0
 
-    def ask_model(self, message):
+    def ask_model(self, message, part):
+        print('Translating part ' + str(part) + '...')
         response = ''
 
         model_options = {}
@@ -52,15 +56,16 @@ class AIInterface :
         for chunk in _stream:
             chunk_text = chunk["message"]["content"]
             response += chunk_text
-            print('.', end="", flush=True)
+            current_time = time.time()
+            if current_time > self.last_time + CURRENT_SPEED_MEASUREMENT_TIME:
+                print(f"\nCurrent Speed: {self.chunk_count/CURRENT_SPEED_MEASUREMENT_TIME} tokens/s >", end="", flush=True)
+                self.last_time = current_time
+                self.chunk_count = 0
+            self.chunk_count += 1
+            print('\b.>', end="", flush=True)
             #print(chunk.message.content, end="", flush=True)
             if chunk.done:
                 print(f"\nSpeed: {1000000000 * chunk.eval_count / chunk.eval_duration} tokens/s")
-            else :
-                counter += 1
-                if counter % 100 == 0:
-                    counter = 0
-                    print("", flush=True)
         return response
 
     def tokenize(self, text):

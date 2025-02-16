@@ -1,4 +1,4 @@
-MODEL_TEMPERATURE = 0
+MODEL_TEMPERATURE = 0.0
 TOP_K = 0
 TOP_P = 0
 REQUEST_FORMAT = 'text'
@@ -13,6 +13,9 @@ SOURCE_DIRECTORY = 'd:\\ai\\learn'
 TRANSLATED_DIRECTORY = f'{SOURCE_DIRECTORY}\\english'
 PROCESSED_DIRECTORY = f'{SOURCE_DIRECTORY}\\processed'
 MAX_PART_TOKENS = 500
+MAX_PARALLEL_WORKERS = 8
+CURRENT_SPEED_MEASUREMENT_TIME = 10
+
 
 from functools import wraps
 
@@ -24,3 +27,4 @@ def singleton(class_):
             instances[class_] = class_(*args, **kwargs)
         return instances[class_]
     return getinstance
+
